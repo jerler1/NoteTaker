@@ -13,19 +13,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // app.use(express.static(path.join(__dirname, './public')));
 
+// Routes
+// =============================================================
 
+// Home index route.
+app.get("/index", function (req, res) {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
-
-
-
-
-
-
-
-
+// Webpage after get notes button is hit.
+app.get("/notes", function (req, res) {
+  res.sendFile(path.join(__dirname, "notes.html"));
+});
 
 // Starts the server to begin listening
 // =============================================================
-app.listen(PORT, function() {
-    console.log("App listening on PORT " + PORT);
-  });
+app.listen(PORT, function () {
+  console.log("App listening on PORT " + PORT);
+});
