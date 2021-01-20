@@ -46,7 +46,9 @@ app.post("/api/notes", function (req, res) {
   const dataIncoming = req.body;
   dataIncoming.id = uuidv4();
   const newData = dataStored + dataIncoming;
-  fs.writeFileSync("./db/db.json", newData, { encoding: "utf-8" });
+  fs.writeFileSync("./db/db.json", newData, {
+    encoding: "utf-8",
+  });
 
   // -- write/return all the notes with fs.writefile with a unique id.
   return newData;
