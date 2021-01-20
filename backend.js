@@ -45,13 +45,15 @@ app.post("/api/notes", function (req, res) {
   // -- add the current note being sent to the "database" to the other notes
   const dataIncoming = req.body;
   dataIncoming.id = uuidv4();
-  const newData = dataStored + dataIncoming;
-  fs.writeFileSync("./db/db.json", newData, {
+  dataStored.push(dataIncoming);
+  const stringData = JSON.stringify(dataStored);
+  fs.writeFileSync("./db/db.json", stringData, {
     encoding: "utf-8",
   });
 
   // -- write/return all the notes with fs.writefile with a unique id.
-  return newData;
+  res.end();
+  return stringData;
 });
 
 // DELETE Routes
@@ -59,8 +61,27 @@ app.post("/api/notes", function (req, res) {
 
 app.delete("/api/notes/:id", function (req, res) {
   // Get the current notes in notes.db.
+  const currentData = JSON.parse(
+    fs.readFileSync("./db/db.json", { encoding: "utf-8" })
+  );
+  const idGiven = req.params.id;
   // Loop over them and delete the one equal to id being provided.
+  const newData = currentData.filter(function (note) {
+    return note.id !== idGiven;
+  });
+  const mapData = currentData.map(function (note) {
+    if (note.id !== idGiven) {
+      return note;
+    }
+  });
+  console.log(mapData);
   // Write notes back into db.
+  const stringData = JSON.stringify(newData);
+  fs.writeFileSync("./db/db.json", stringData, {
+    encoding: "utf-8",
+  });
+  res.end();
+  return stringData;
 });
 
 // Home route.
