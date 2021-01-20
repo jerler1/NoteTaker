@@ -4,6 +4,7 @@ const express = require("express");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
+const { stringify } = require("querystring");
 
 // Sets up the Express App
 // =============================================================
@@ -26,7 +27,9 @@ app.get("/notes", function (req, res) {
 // Webpage after get notes button is hit.
 app.get("/api/notes", function (req, res) {
   // TODO get the notes contained in the notes.db
-  const data = fs.readFileSync("./db/db.json");
+  const data = JSON.parse(
+    fs.readFileSync("./db/db.json", { encoding: "utf-8" })
+  );
   // Read the notes into a variable and return the variable.
   return res.json(data);
 });
@@ -35,9 +38,18 @@ app.get("/api/notes", function (req, res) {
 // =============================================================
 
 app.post("/api/notes", function (req, res) {
-  // TODO get the notes contained in the notes.db
+  // Get the notes contained in the notes.db
+  const dataStored = JSON.parse(
+    fs.readFileSync("./db/db.json", { encoding: "utf-8" })
+  );
   // -- add the current note being sent to the "database" to the other notes
-  // -- write all the notes with fs.writefile with a unique id.
+  const dataIncoming = req.body;
+  dataIncoming.id = uuidv4();
+  const newData = dataStored + dataIncoming;
+  fs.writeFileSync("./db/db.json", newData, { encoding: "utf-8" });
+
+  // -- write/return all the notes with fs.writefile with a unique id.
+  return newData;
 });
 
 // DELETE Routes
